@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Restful-Booker API Test Suite" tests="24" time="12.915">
+  <testsuite name="00 Health Check / TC_API_001 - Health check returns Created" id="d48d43bf-55aa-42d2-b901-c2b54919952a" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="2.405">
+    <testcase name="Response time is below the threshold" time="2.405" classname="00HealthCheckTcApi001HealthCheckReturnsCreated"/>
+    <testcase name="Status code is 201" time="2.405" classname="00HealthCheckTcApi001HealthCheckReturnsCreated"/>
+    <testcase name="Status text is 'Created'" time="2.405" classname="00HealthCheckTcApi001HealthCheckReturnsCreated"/>
+  </testsuite>
+  <testsuite name="01 Authentication / TC_API_002 - Create token with valid credentials" id="5191cef4-4b4d-42eb-8787-31383994218b" timestamp="2026-11-17T09:05:05.090Z" tests="5" failures="0" errors="0" time="0.282">
+    <testcase name="Response time is below the threshold" time="0.282" classname="01AuthenticationTcApi002CreateTokenWithValidCredentials"/>
+    <testcase name="Status code is 200" time="0.282" classname="01AuthenticationTcApi002CreateTokenWithValidCredentials"/>
+    <testcase name="Content-Type is JSON" time="0.282" classname="01AuthenticationTcApi002CreateTokenWithValidCredentials"/>
+    <testcase name="Response contains a non-empty token string" time="0.282" classname="01AuthenticationTcApi002CreateTokenWithValidCredentials"/>
+    <testcase name="Response does not contain an error reason" time="0.282" classname="01AuthenticationTcApi002CreateTokenWithValidCredentials"/>
+  </testsuite>
+  <testsuite name="01 Authentication / TC_API_003 - Reject invalid password" id="0fcda68c-dccd-49e9-8d76-12cf4dfbc558" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.372">
+    <testcase name="Response time is below the threshold" time="0.372" classname="01AuthenticationTcApi003RejectInvalidPassword"/>
+    <testcase name="Status code is 200" time="0.372" classname="01AuthenticationTcApi003RejectInvalidPassword"/>
+    <testcase name="Reason is 'Bad credentials'" time="0.372" classname="01AuthenticationTcApi003RejectInvalidPassword"/>
+    <testcase name="No token is returned" time="0.372" classname="01AuthenticationTcApi003RejectInvalidPassword"/>
+  </testsuite>
+  <testsuite name="01 Authentication / TC_API_004 - Reject invalid username" id="45e916cf-6c5b-4269-8cf9-9378b499409d" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.699">
+    <testcase name="Response time is below the threshold" time="0.699" classname="01AuthenticationTcApi004RejectInvalidUsername"/>
+    <testcase name="Status code is 200" time="0.699" classname="01AuthenticationTcApi004RejectInvalidUsername"/>
+    <testcase name="Reason is 'Bad credentials'" time="0.699" classname="01AuthenticationTcApi004RejectInvalidUsername"/>
+    <testcase name="No token is returned" time="0.699" classname="01AuthenticationTcApi004RejectInvalidUsername"/>
+  </testsuite>
+  <testsuite name="01 Authentication / TC_API_005 - Reject empty credentials" id="56c6a2ef-9150-47ed-b69c-c7f999b9f5df" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.500">
+    <testcase name="Response time is below the threshold" time="0.500" classname="01AuthenticationTcApi005RejectEmptyCredentials"/>
+    <testcase name="Status code is 200" time="0.500" classname="01AuthenticationTcApi005RejectEmptyCredentials"/>
+    <testcase name="Reason is 'Bad credentials'" time="0.500" classname="01AuthenticationTcApi005RejectEmptyCredentials"/>
+    <testcase name="No token is returned" time="0.500" classname="01AuthenticationTcApi005RejectEmptyCredentials"/>
+  </testsuite>
+  <testsuite name="02 Create Booking / TC_API_006 - Create a booking with valid data" id="63af0c17-7e42-4fe2-959d-48ee3b32a956" timestamp="2026-11-17T09:05:05.090Z" tests="6" failures="0" errors="0" time="0.410">
+    <testcase name="Response time is below the threshold" time="0.410" classname="02CreateBookingTcApi006CreateABookingWithValidData"/>
+    <testcase name="Status code is 200" time="0.410" classname="02CreateBookingTcApi006CreateABookingWithValidData"/>
+    <testcase name="Content-Type is JSON" time="0.410" classname="02CreateBookingTcApi006CreateABookingWithValidData"/>
+    <testcase name="Response contains a numeric bookingid" time="0.410" classname="02CreateBookingTcApi006CreateABookingWithValidData"/>
+    <testcase name="Booking data matches the request" time="0.410" classname="02CreateBookingTcApi006CreateABookingWithValidData"/>
+    <testcase name="Response matches the expected schema" time="0.410" classname="02CreateBookingTcApi006CreateABookingWithValidData"/>
+  </testsuite>
+  <testsuite name="02 Create Booking / TC_API_007 - Reject a booking without firstname" id="b9265deb-4381-466e-ba0c-038111bba798" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="0.312">
+    <testcase name="Response time is below the threshold" time="0.312" classname="02CreateBookingTcApi007RejectABookingWithoutFirstname"/>
+    <testcase name="Status code is 500" time="0.312" classname="02CreateBookingTcApi007RejectABookingWithoutFirstname"/>
+    <testcase name="No booking was created" time="0.312" classname="02CreateBookingTcApi007RejectABookingWithoutFirstname"/>
+  </testsuite>
+  <testsuite name="02 Create Booking / TC_API_008 - Reject a booking without bookingdates" id="de21ffa3-ac62-4f98-9581-2c678fb9d6b2" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="0.337">
+    <testcase name="Response time is below the threshold" time="0.337" classname="02CreateBookingTcApi008RejectABookingWithoutBookingdates"/>
+    <testcase name="Status code is 500" time="0.337" classname="02CreateBookingTcApi008RejectABookingWithoutBookingdates"/>
+    <testcase name="No booking was created" time="0.337" classname="02CreateBookingTcApi008RejectABookingWithoutBookingdates"/>
+  </testsuite>
+  <testsuite name="03 Read Booking / TC_API_009 - Get all booking ids" id="26bb7895-35ae-4712-a778-c4eac8261091" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.744">
+    <testcase name="Response time is below the threshold" time="0.744" classname="03ReadBookingTcApi009GetAllBookingIds"/>
+    <testcase name="Status code is 200" time="0.744" classname="03ReadBookingTcApi009GetAllBookingIds"/>
+    <testcase name="Response is a non-empty array" time="0.744" classname="03ReadBookingTcApi009GetAllBookingIds"/>
+    <testcase name="Every item has a numeric bookingid" time="0.744" classname="03ReadBookingTcApi009GetAllBookingIds"/>
+  </testsuite>
+  <testsuite name="03 Read Booking / TC_API_010 - Get the created booking by id" id="cf796b06-6a42-4f26-a838-b631b74005d9" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.601">
+    <testcase name="Response time is below the threshold" time="0.601" classname="03ReadBookingTcApi010GetTheCreatedBookingById"/>
+    <testcase name="Status code is 200" time="0.601" classname="03ReadBookingTcApi010GetTheCreatedBookingById"/>
+    <testcase name="Booking data matches what was created" time="0.601" classname="03ReadBookingTcApi010GetTheCreatedBookingById"/>
+    <testcase name="Response matches the expected schema" time="0.601" classname="03ReadBookingTcApi010GetTheCreatedBookingById"/>
+  </testsuite>
+  <testsuite name="03 Read Booking / TC_API_011 - Filter bookings by first and last name" id="760ac564-5d39-4256-a974-31d717a37e75" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="0.458">
+    <testcase name="Response time is below the threshold" time="0.458" classname="03ReadBookingTcApi011FilterBookingsByFirstAndLastName"/>
+    <testcase name="Status code is 200" time="0.458" classname="03ReadBookingTcApi011FilterBookingsByFirstAndLastName"/>
+    <testcase name="Filtered result contains the created booking" time="0.458" classname="03ReadBookingTcApi011FilterBookingsByFirstAndLastName"/>
+  </testsuite>
+  <testsuite name="03 Read Booking / TC_API_012 - Get a booking that does not exist" id="0a5a6ba9-d6c5-4135-ba8d-905373bfdae1" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.583">
+    <testcase name="Response time is below the threshold" time="0.583" classname="03ReadBookingTcApi012GetABookingThatDoesNotExist"/>
+    <testcase name="Status code is 404" time="0.583" classname="03ReadBookingTcApi012GetABookingThatDoesNotExist"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_013 - Update a booking (PUT) with a valid token" id="6e5443a5-f05e-448f-a243-d9a4c40a14ff" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="0.437">
+    <testcase name="Response time is below the threshold" time="0.437" classname="04UpdateBookingTcApi013UpdateABookingPutWithAValidToken"/>
+    <testcase name="Status code is 200" time="0.437" classname="04UpdateBookingTcApi013UpdateABookingPutWithAValidToken"/>
+    <testcase name="All fields were updated" time="0.437" classname="04UpdateBookingTcApi013UpdateABookingPutWithAValidToken"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_014 - Reject update without a token" id="c25e7380-2ab5-4ba0-96de-0757d1e0d84f" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.415">
+    <testcase name="Response time is below the threshold" time="0.415" classname="04UpdateBookingTcApi014RejectUpdateWithoutAToken"/>
+    <testcase name="Status code is 403" time="0.415" classname="04UpdateBookingTcApi014RejectUpdateWithoutAToken"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_015 - Reject update with an invalid token" id="416ae7f3-5e14-4d78-b504-4cd5b2ac43b2" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.463">
+    <testcase name="Response time is below the threshold" time="0.463" classname="04UpdateBookingTcApi015RejectUpdateWithAnInvalidToken"/>
+    <testcase name="Status code is 403" time="0.463" classname="04UpdateBookingTcApi015RejectUpdateWithAnInvalidToken"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_016 - Partially update a booking (PATCH) with a valid token" id="f7167060-6546-4a33-96e5-386940ae13b6" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.370">
+    <testcase name="Response time is below the threshold" time="0.370" classname="04UpdateBookingTcApi016PartiallyUpdateABookingPatchWithAValidToken"/>
+    <testcase name="Status code is 200" time="0.370" classname="04UpdateBookingTcApi016PartiallyUpdateABookingPatchWithAValidToken"/>
+    <testcase name="Names were updated" time="0.370" classname="04UpdateBookingTcApi016PartiallyUpdateABookingPatchWithAValidToken"/>
+    <testcase name="Fields that were not sent are unchanged" time="0.370" classname="04UpdateBookingTcApi016PartiallyUpdateABookingPatchWithAValidToken"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_017 - Reject partial update without a token" id="5d5f0613-df33-4bc6-be2e-2f6da2eb18b3" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.296">
+    <testcase name="Response time is below the threshold" time="0.296" classname="04UpdateBookingTcApi017RejectPartialUpdateWithoutAToken"/>
+    <testcase name="Status code is 403" time="0.296" classname="04UpdateBookingTcApi017RejectPartialUpdateWithoutAToken"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_018 - Partially update using Basic Authorization" id="fc3064e3-8127-4f3a-bb25-54a6a5f4ebea" timestamp="2026-11-17T09:05:05.090Z" tests="4" failures="0" errors="0" time="0.374">
+    <testcase name="Response time is below the threshold" time="0.374" classname="04UpdateBookingTcApi018PartiallyUpdateUsingBasicAuthorization"/>
+    <testcase name="Status code is 200" time="0.374" classname="04UpdateBookingTcApi018PartiallyUpdateUsingBasicAuthorization"/>
+    <testcase name="additionalneeds was updated" time="0.374" classname="04UpdateBookingTcApi018PartiallyUpdateUsingBasicAuthorization"/>
+    <testcase name="Earlier changes are kept" time="0.374" classname="04UpdateBookingTcApi018PartiallyUpdateUsingBasicAuthorization"/>
+  </testsuite>
+  <testsuite name="04 Update Booking / TC_API_019 - Verify the updates were saved" id="b5a513f2-534c-447b-92a4-2bb525b3c2bb" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="0.381">
+    <testcase name="Response time is below the threshold" time="0.381" classname="04UpdateBookingTcApi019VerifyTheUpdatesWereSaved"/>
+    <testcase name="Status code is 200" time="0.381" classname="04UpdateBookingTcApi019VerifyTheUpdatesWereSaved"/>
+    <testcase name="Stored booking contains all updates" time="0.381" classname="04UpdateBookingTcApi019VerifyTheUpdatesWereSaved"/>
+  </testsuite>
+  <testsuite name="05 Delete Booking / TC_API_020 - Reject delete without a token" id="e456e37f-8601-48ff-a8c1-338207de14a1" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.436">
+    <testcase name="Response time is below the threshold" time="0.436" classname="05DeleteBookingTcApi020RejectDeleteWithoutAToken"/>
+    <testcase name="Status code is 403" time="0.436" classname="05DeleteBookingTcApi020RejectDeleteWithoutAToken"/>
+  </testsuite>
+  <testsuite name="05 Delete Booking / TC_API_021 - Reject delete with an invalid token" id="f78de6b3-67cd-4c7e-8e16-1f6398ecc033" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.671">
+    <testcase name="Response time is below the threshold" time="0.671" classname="05DeleteBookingTcApi021RejectDeleteWithAnInvalidToken"/>
+    <testcase name="Status code is 403" time="0.671" classname="05DeleteBookingTcApi021RejectDeleteWithAnInvalidToken"/>
+  </testsuite>
+  <testsuite name="05 Delete Booking / TC_API_022 - Delete a booking with a valid token" id="6fa5beb0-2f17-4c06-8a13-ee302f9fdf41" timestamp="2026-11-17T09:05:05.090Z" tests="3" failures="0" errors="0" time="0.498">
+    <testcase name="Response time is below the threshold" time="0.498" classname="05DeleteBookingTcApi022DeleteABookingWithAValidToken"/>
+    <testcase name="Status code is 201" time="0.498" classname="05DeleteBookingTcApi022DeleteABookingWithAValidToken"/>
+    <testcase name="Status text is 'Created'" time="0.498" classname="05DeleteBookingTcApi022DeleteABookingWithAValidToken"/>
+  </testsuite>
+  <testsuite name="05 Delete Booking / TC_API_023 - Deleted booking can no longer be read" id="cf103e6a-63d3-4cb0-9c09-2e2898557501" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.439">
+    <testcase name="Response time is below the threshold" time="0.439" classname="05DeleteBookingTcApi023DeletedBookingCanNoLongerBeRead"/>
+    <testcase name="Status code is 404" time="0.439" classname="05DeleteBookingTcApi023DeletedBookingCanNoLongerBeRead"/>
+  </testsuite>
+  <testsuite name="05 Delete Booking / TC_API_024 - Delete an already-deleted booking" id="4dbde3b0-3348-42b3-9bfc-b17b2c696258" timestamp="2026-11-17T09:05:05.090Z" tests="2" failures="0" errors="0" time="0.432">
+    <testcase name="Response time is below the threshold" time="0.432" classname="05DeleteBookingTcApi024DeleteAnAlreadyDeletedBooking"/>
+    <testcase name="Status code is 405" time="0.432" classname="05DeleteBookingTcApi024DeleteAnAlreadyDeletedBooking"/>
+  </testsuite>
+</testsuites>

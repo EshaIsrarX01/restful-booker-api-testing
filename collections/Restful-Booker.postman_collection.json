@@ -1,0 +1,1238 @@
+{
+  "info": {
+    "_postman_id": "7b4713a6-a92c-40ba-8b55-ad7e4d0235d8",
+    "name": "Restful-Booker API Test Suite",
+    "description": "Automated API tests for https://restful-booker.herokuapp.com. 24 test cases covering authentication, create, read, update and delete, with positive and negative scenarios. Requests run in order: later requests reuse the token and bookingId saved by earlier ones.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "00 Health Check",
+      "item": [
+        {
+          "name": "TC_API_001 - Health check returns Created",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Status text is 'Created'\", function () { pm.expect(pm.response.status).to.eql(\"Created\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ping",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ping"
+              ]
+            },
+            "description": "**TC_API_001**: Verify the API is up (health check)\n\n**Expected:** 201 Created"
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 Authentication",
+      "item": [
+        {
+          "name": "TC_API_002 - Create token with valid credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "pm.test(\"Content-Type is JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "const body = pm.response.json();",
+                  "pm.test(\"Response contains a non-empty token string\", function () {",
+                  "    pm.expect(body.token).to.be.a(\"string\").and.not.empty;",
+                  "});",
+                  "pm.test(\"Response does not contain an error reason\", function () { pm.expect(body).to.not.have.property(\"reason\"); });",
+                  "if (body.token) { pm.environment.set(\"token\", body.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth"
+              ]
+            },
+            "description": "**TC_API_002**: Generate an auth token with valid credentials\n\n**Expected:** Token returned and saved to the environment",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_003 - Reject invalid password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.test(\"Reason is 'Bad credentials'\", function () { pm.expect(body.reason).to.eql(\"Bad credentials\"); });",
+                  "pm.test(\"No token is returned\", function () { pm.expect(body).to.not.have.property(\"token\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth"
+              ]
+            },
+            "description": "**TC_API_003**: Token must not be issued for a wrong password\n\n**Expected:** No token; reason 'Bad credentials' (the API answers 200, see findings)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"wrong_password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_004 - Reject invalid username",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.test(\"Reason is 'Bad credentials'\", function () { pm.expect(body.reason).to.eql(\"Bad credentials\"); });",
+                  "pm.test(\"No token is returned\", function () { pm.expect(body).to.not.have.property(\"token\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth"
+              ]
+            },
+            "description": "**TC_API_004**: Token must not be issued for an unknown username\n\n**Expected:** No token; reason 'Bad credentials'",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"wrong_user\",\n    \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_005 - Reject empty credentials",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.test(\"Reason is 'Bad credentials'\", function () { pm.expect(body.reason).to.eql(\"Bad credentials\"); });",
+                  "pm.test(\"No token is returned\", function () { pm.expect(body).to.not.have.property(\"token\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth"
+              ]
+            },
+            "description": "**TC_API_005**: Token must not be issued when username and password are empty\n\n**Expected:** No token; reason 'Bad credentials'",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"\",\n    \"password\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Create Booking",
+      "item": [
+        {
+          "name": "TC_API_006 - Create a booking with valid data",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Unique test data on every run, so runs never collide with each other",
+                  "const suffix = Date.now().toString().slice(-6) + Math.floor(Math.random() * 100);",
+                  "pm.environment.set(\"firstName\", \"Esha\" + suffix);",
+                  "pm.environment.set(\"lastName\", \"Tester\" + suffix);",
+                  "pm.environment.set(\"totalPrice\", 100 + Math.floor(Math.random() * 900));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "            pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "            pm.test(\"Content-Type is JSON\", function () { pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\"); });",
+                  "            const body = pm.response.json();",
+                  "            pm.test(\"Response contains a numeric bookingid\", function () { pm.expect(body.bookingid).to.be.a(\"number\"); });",
+                  "            pm.test(\"Booking data matches the request\", function () {",
+                  "                const b = body.booking;",
+                  "                pm.expect(b.firstname).to.eql(pm.environment.get(\"firstName\"));",
+                  "                pm.expect(b.lastname).to.eql(pm.environment.get(\"lastName\"));",
+                  "                pm.expect(b.totalprice).to.eql(Number(pm.environment.get(\"totalPrice\")));",
+                  "                pm.expect(b.depositpaid).to.eql(true);",
+                  "                pm.expect(b.bookingdates.checkin).to.eql(\"2026-12-01\");",
+                  "                pm.expect(b.bookingdates.checkout).to.eql(\"2026-12-10\");",
+                  "                pm.expect(b.additionalneeds).to.eql(\"Breakfast\");",
+                  "            });",
+                  "            const bookingSchema = {",
+                  "    type: \"object\",",
+                  "    required: [\"firstname\", \"lastname\", \"totalprice\", \"depositpaid\", \"bookingdates\"],",
+                  "    properties: {",
+                  "        firstname: { type: \"string\" },",
+                  "        lastname: { type: \"string\" },",
+                  "        totalprice: { type: \"number\" },",
+                  "        depositpaid: { type: \"boolean\" },",
+                  "        bookingdates: {",
+                  "            type: \"object\",",
+                  "            required: [\"checkin\", \"checkout\"],",
+                  "            properties: { checkin: { type: \"string\" }, checkout: { type: \"string\" } }",
+                  "        },",
+                  "        additionalneeds: { type: \"string\" }",
+                  "    }",
+                  "};",
+                  "            pm.test(\"Response matches the expected schema\", function () {",
+                  "                pm.response.to.have.jsonSchema({",
+                  "                    type: \"object\",",
+                  "                    required: [\"bookingid\", \"booking\"],",
+                  "                    properties: { bookingid: { type: \"number\" }, booking: bookingSchema }",
+                  "                });",
+                  "            });",
+                  "            // Save the id for the read / update / delete requests that follow",
+                  "            pm.environment.set(\"bookingId\", body.bookingid);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking"
+              ]
+            },
+            "description": "**TC_API_006**: Create a booking and verify the response echoes the data\n\n**Expected:** bookingid returned; booking data matches the request; schema valid",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"{{firstName}}\",\n    \"lastname\": \"{{lastName}}\",\n    \"totalprice\": {{totalPrice}},\n    \"depositpaid\": true,\n    \"bookingdates\": {\n        \"checkin\": \"2026-12-01\",\n        \"checkout\": \"2026-12-10\"\n    },\n    \"additionalneeds\": \"Breakfast\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_007 - Reject a booking without firstname",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 500\", function () { pm.response.to.have.status(500); });",
+                  "pm.test(\"No booking was created\", function () { pm.expect(pm.response.text()).to.not.include(\"bookingid\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking"
+              ]
+            },
+            "description": "**TC_API_007**: A required field (firstname) is missing\n\n**Expected:** Request rejected, no booking created (the API answers 500, see findings)",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"lastname\": \"Tester\",\n    \"totalprice\": 150,\n    \"depositpaid\": true,\n    \"bookingdates\": { \"checkin\": \"2026-12-01\", \"checkout\": \"2026-12-10\" }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_008 - Reject a booking without bookingdates",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 500\", function () { pm.response.to.have.status(500); });",
+                  "pm.test(\"No booking was created\", function () { pm.expect(pm.response.text()).to.not.include(\"bookingid\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking"
+              ]
+            },
+            "description": "**TC_API_008**: A required object (bookingdates) is missing\n\n**Expected:** Request rejected, no booking created",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"Esha\",\n    \"lastname\": \"Tester\",\n    \"totalprice\": 150,\n    \"depositpaid\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Read Booking",
+      "item": [
+        {
+          "name": "TC_API_009 - Get all booking ids",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const body = pm.response.json();",
+                  "pm.test(\"Response is a non-empty array\", function () { pm.expect(body).to.be.an(\"array\").and.not.empty; });",
+                  "pm.test(\"Every item has a numeric bookingid\", function () {",
+                  "    body.forEach(function (item) { pm.expect(item.bookingid).to.be.a(\"number\"); });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking"
+              ]
+            },
+            "description": "**TC_API_009**: Retrieve the list of booking ids\n\n**Expected:** Array of objects, each with a numeric bookingid"
+          }
+        },
+        {
+          "name": "TC_API_010 - Get the created booking by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "            pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "            const b = pm.response.json();",
+                  "            pm.test(\"Booking data matches what was created\", function () {",
+                  "                pm.expect(b.firstname).to.eql(pm.environment.get(\"firstName\"));",
+                  "                pm.expect(b.lastname).to.eql(pm.environment.get(\"lastName\"));",
+                  "                pm.expect(b.totalprice).to.eql(Number(pm.environment.get(\"totalPrice\")));",
+                  "                pm.expect(b.depositpaid).to.eql(true);",
+                  "                pm.expect(b.bookingdates.checkin).to.eql(\"2026-12-01\");",
+                  "                pm.expect(b.bookingdates.checkout).to.eql(\"2026-12-10\");",
+                  "                pm.expect(b.additionalneeds).to.eql(\"Breakfast\");",
+                  "            });",
+                  "            const bookingSchema = {",
+                  "    type: \"object\",",
+                  "    required: [\"firstname\", \"lastname\", \"totalprice\", \"depositpaid\", \"bookingdates\"],",
+                  "    properties: {",
+                  "        firstname: { type: \"string\" },",
+                  "        lastname: { type: \"string\" },",
+                  "        totalprice: { type: \"number\" },",
+                  "        depositpaid: { type: \"boolean\" },",
+                  "        bookingdates: {",
+                  "            type: \"object\",",
+                  "            required: [\"checkin\", \"checkout\"],",
+                  "            properties: { checkin: { type: \"string\" }, checkout: { type: \"string\" } }",
+                  "        },",
+                  "        additionalneeds: { type: \"string\" }",
+                  "    }",
+                  "};",
+                  "            pm.test(\"Response matches the expected schema\", function () { pm.response.to.have.jsonSchema(bookingSchema); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_010**: Retrieve the booking created in TC_API_006\n\n**Expected:** Booking data equals the data that was created; schema valid"
+          }
+        },
+        {
+          "name": "TC_API_011 - Filter bookings by first and last name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const ids = pm.response.json().map(function (item) { return item.bookingid; });",
+                  "pm.test(\"Filtered result contains the created booking\", function () {",
+                  "    pm.expect(ids).to.include(Number(pm.environment.get(\"bookingId\")));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking?firstname={{firstName}}&lastname={{lastName}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking"
+              ],
+              "query": [
+                {
+                  "key": "firstname",
+                  "value": "{{firstName}}"
+                },
+                {
+                  "key": "lastname",
+                  "value": "{{lastName}}"
+                }
+              ]
+            },
+            "description": "**TC_API_011**: Filter the list with firstname and lastname query parameters\n\n**Expected:** The list contains the booking created in TC_API_006"
+          }
+        },
+        {
+          "name": "TC_API_012 - Get a booking that does not exist",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/999999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "999999999"
+              ]
+            },
+            "description": "**TC_API_012**: Request a booking id that does not exist\n\n**Expected:** 404 Not Found"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Update Booking",
+      "item": [
+        {
+          "name": "TC_API_013 - Update a booking (PUT) with a valid token",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const suffix = Date.now().toString().slice(-6);",
+                  "pm.environment.set(\"updatedFirstName\", \"Updated\" + suffix);",
+                  "pm.environment.set(\"updatedTotalPrice\", Number(pm.environment.get(\"totalPrice\")) + 100);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const b = pm.response.json();",
+                  "pm.test(\"All fields were updated\", function () {",
+                  "    pm.expect(b.firstname).to.eql(pm.environment.get(\"updatedFirstName\"));",
+                  "    pm.expect(b.lastname).to.eql(pm.environment.get(\"lastName\"));",
+                  "    pm.expect(b.totalprice).to.eql(Number(pm.environment.get(\"updatedTotalPrice\")));",
+                  "    pm.expect(b.depositpaid).to.eql(false);",
+                  "    pm.expect(b.bookingdates.checkin).to.eql(\"2026-12-15\");",
+                  "    pm.expect(b.bookingdates.checkout).to.eql(\"2026-12-20\");",
+                  "    pm.expect(b.additionalneeds).to.eql(\"Lunch\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token={{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_013**: Full update of the booking using the token\n\n**Expected:** All fields updated and returned",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"{{updatedFirstName}}\",\n    \"lastname\": \"{{lastName}}\",\n    \"totalprice\": {{updatedTotalPrice}},\n    \"depositpaid\": false,\n    \"bookingdates\": {\n        \"checkin\": \"2026-12-15\",\n        \"checkout\": \"2026-12-20\"\n    },\n    \"additionalneeds\": \"Lunch\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_014 - Reject update without a token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_014**: PUT without authentication\n\n**Expected:** 403 Forbidden, booking not changed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"{{updatedFirstName}}\",\n    \"lastname\": \"{{lastName}}\",\n    \"totalprice\": {{updatedTotalPrice}},\n    \"depositpaid\": false,\n    \"bookingdates\": {\n        \"checkin\": \"2026-12-15\",\n        \"checkout\": \"2026-12-20\"\n    },\n    \"additionalneeds\": \"Lunch\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_015 - Reject update with an invalid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token=invalid_token_123"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_015**: PUT with a token that is not valid\n\n**Expected:** 403 Forbidden, booking not changed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"{{updatedFirstName}}\",\n    \"lastname\": \"{{lastName}}\",\n    \"totalprice\": {{updatedTotalPrice}},\n    \"depositpaid\": false,\n    \"bookingdates\": {\n        \"checkin\": \"2026-12-15\",\n        \"checkout\": \"2026-12-20\"\n    },\n    \"additionalneeds\": \"Lunch\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_016 - Partially update a booking (PATCH) with a valid token",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const suffix = Date.now().toString().slice(-6);",
+                  "pm.environment.set(\"patchedFirstName\", \"Patched\" + suffix);",
+                  "pm.environment.set(\"patchedLastName\", \"Changed\" + suffix);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const b = pm.response.json();",
+                  "pm.test(\"Names were updated\", function () {",
+                  "    pm.expect(b.firstname).to.eql(pm.environment.get(\"patchedFirstName\"));",
+                  "    pm.expect(b.lastname).to.eql(pm.environment.get(\"patchedLastName\"));",
+                  "});",
+                  "pm.test(\"Fields that were not sent are unchanged\", function () {",
+                  "    pm.expect(b.totalprice).to.eql(Number(pm.environment.get(\"updatedTotalPrice\")));",
+                  "    pm.expect(b.depositpaid).to.eql(false);",
+                  "    pm.expect(b.additionalneeds).to.eql(\"Lunch\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token={{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_016**: Change only firstname and lastname\n\n**Expected:** Names changed; the other fields keep the values set by the PUT",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"{{patchedFirstName}}\",\n    \"lastname\": \"{{patchedLastName}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_017 - Reject partial update without a token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_017**: PATCH without authentication\n\n**Expected:** 403 Forbidden, booking not changed",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstname\": \"ShouldNotChange\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_018 - Partially update using Basic Authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const b = pm.response.json();",
+                  "pm.test(\"additionalneeds was updated\", function () { pm.expect(b.additionalneeds).to.eql(\"Late checkout\"); });",
+                  "pm.test(\"Earlier changes are kept\", function () { pm.expect(b.firstname).to.eql(pm.environment.get(\"patchedFirstName\")); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Basic YWRtaW46cGFzc3dvcmQxMjM="
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_018**: Authenticate with the Authorization: Basic header instead of the token\n\n**Expected:** additionalneeds updated; names keep the patched values",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"additionalneeds\": \"Late checkout\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC_API_019 - Verify the updates were saved",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "const b = pm.response.json();",
+                  "pm.test(\"Stored booking contains all updates\", function () {",
+                  "    pm.expect(b.firstname).to.eql(pm.environment.get(\"patchedFirstName\"));",
+                  "    pm.expect(b.lastname).to.eql(pm.environment.get(\"patchedLastName\"));",
+                  "    pm.expect(b.totalprice).to.eql(Number(pm.environment.get(\"updatedTotalPrice\")));",
+                  "    pm.expect(b.depositpaid).to.eql(false);",
+                  "    pm.expect(b.additionalneeds).to.eql(\"Late checkout\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_019**: Read the booking again after the PUT and PATCH requests\n\n**Expected:** The stored booking contains every update"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Delete Booking",
+      "item": [
+        {
+          "name": "TC_API_020 - Reject delete without a token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_020**: DELETE without authentication\n\n**Expected:** 403 Forbidden, booking still exists"
+          }
+        },
+        {
+          "name": "TC_API_021 - Reject delete with an invalid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token=invalid_token_123"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_021**: DELETE with a token that is not valid\n\n**Expected:** 403 Forbidden, booking still exists"
+          }
+        },
+        {
+          "name": "TC_API_022 - Delete a booking with a valid token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+                  "pm.test(\"Status text is 'Created'\", function () { pm.expect(pm.response.status).to.eql(\"Created\"); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token={{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_022**: Delete the booking created in TC_API_006\n\n**Expected:** 201 Created (the API's documented success code for DELETE)"
+          }
+        },
+        {
+          "name": "TC_API_023 - Deleted booking can no longer be read",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () { pm.response.to.have.status(404); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_023**: Read the booking that was just deleted\n\n**Expected:** 404 Not Found"
+          }
+        },
+        {
+          "name": "TC_API_024 - Delete an already-deleted booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 405\", function () { pm.response.to.have.status(405); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "token={{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/booking/{{bookingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "booking",
+                "{{bookingId}}"
+              ]
+            },
+            "description": "**TC_API_024**: Repeat the DELETE on a booking that no longer exists\n\n**Expected:** 405 Method Not Allowed (see findings, REST convention would be 404)"
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Runs after EVERY request in the collection",
+          "pm.test(\"Response time is below the threshold\", function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(Number(pm.environment.get(\"maxResponseTime\")));",
+          "});"
+        ]
+      }
+    }
+  ]
+}
