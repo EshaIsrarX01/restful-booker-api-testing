@@ -109,7 +109,7 @@ The suite asserts the API's actual behaviour, so it works as a stable regression
 - Data-driven iterations with a CSV or JSON file
 - Contract tests with a shared OpenAPI schema
 - Run against multiple environments (dev, staging) using separate environment files
-- Pair with the UI automation project in [saucedemo-selenium-automation](https://github.com/EshaIsrarX01/saucedemo-selenium-automation)
+- Pair with the UI automation project in [saucedemo-selenium-automation](https://github.com/EshaIsrarX01/saucedemo-automation-testing.git)
 
 ## Contact
 
