@@ -37,14 +37,14 @@ restful-booker-api-testing/
 
 ## Environment variables
 
-| Variable | Purpose | Set by |
-| --- | --- | --- |
-| `baseUrl` | API base URL | you (environment file) |
-| `username`, `password` | Public demo credentials (`admin` / `password123`, published in the API docs) | you |
-| `maxResponseTime` | Response time limit in ms (default 5000) | you |
-| `token` | Auth token | TC_API_002 |
-| `bookingId` | Id of the booking under test | TC_API_006 |
-| `firstName`, `lastName`, `totalPrice`, `updated*`, `patched*` | Generated test data | pre-request scripts |
+| Variable | Purpose |
+| --- | --- |
+| `baseUrl` | API base URL | 
+| `username`, `password` | Public demo credentials (`admin` / `password123`, published in the API docs) |
+| `maxResponseTime` | Response time limit in ms (default 5000) |
+| `token` | Auth token |
+| `bookingId` | Id of the booking under test |
+| `firstName`, `lastName`, `totalPrice`, `updated*`, `patched*` | Generated test data |
 
 ## How to run
 
@@ -72,41 +72,6 @@ npx newman run collections/Restful-Booker.postman_collection.json -e environment
 ```
 
 > The requests depend on each other (create, then read, update, delete), so run the collection **in order and as a whole**, not one request at a time.
-
-## Report
-
-> Add a screenshot of your Newman HTML report here: `docs/newman-report.png`
->
-> `![Newman report](docs/newman-report.png)`
-
-## Test cases
-
-| Test case | Module | Method and endpoint | Type | Expected |
-| --- | --- | --- | --- | --- |
-| TC_API_001 | Health Check | `GET /ping` | Positive | 201: 201 Created |
-| TC_API_002 | Authentication | `POST /auth` | Positive | 200: Token returned and saved to the environment |
-| TC_API_003 | Authentication | `POST /auth` | Negative | 200: No token; reason 'Bad credentials' (the API answers 200, see findings) |
-| TC_API_004 | Authentication | `POST /auth` | Negative | 200: No token; reason 'Bad credentials' |
-| TC_API_005 | Authentication | `POST /auth` | Negative | 200: No token; reason 'Bad credentials' |
-| TC_API_006 | Create Booking | `POST /booking` | Positive | 200: bookingid returned; booking data matches the request; schema valid |
-| TC_API_007 | Create Booking | `POST /booking` | Negative | 500: Request rejected, no booking created (the API answers 500, see findings) |
-| TC_API_008 | Create Booking | `POST /booking` | Negative | 500: Request rejected, no booking created |
-| TC_API_009 | Read Booking | `GET /booking` | Positive | 200: Array of objects, each with a numeric bookingid |
-| TC_API_010 | Read Booking | `GET /booking/{{bookingId}}` | Positive | 200: Booking data equals the data that was created; schema valid |
-| TC_API_011 | Read Booking | `GET /booking` | Positive | 200: The list contains the booking created in TC_API_006 |
-| TC_API_012 | Read Booking | `GET /booking/999999999` | Negative | 404: 404 Not Found |
-| TC_API_013 | Update Booking | `PUT /booking/{{bookingId}}` | Positive | 200: All fields updated and returned |
-| TC_API_014 | Update Booking | `PUT /booking/{{bookingId}}` | Negative | 403: 403 Forbidden, booking not changed |
-| TC_API_015 | Update Booking | `PUT /booking/{{bookingId}}` | Negative | 403: 403 Forbidden, booking not changed |
-| TC_API_016 | Update Booking | `PATCH /booking/{{bookingId}}` | Positive | 200: Names changed; the other fields keep the values set by the PUT |
-| TC_API_017 | Update Booking | `PATCH /booking/{{bookingId}}` | Negative | 403: 403 Forbidden, booking not changed |
-| TC_API_018 | Update Booking | `PATCH /booking/{{bookingId}}` | Positive | 200: additionalneeds updated; names keep the patched values |
-| TC_API_019 | Update Booking | `GET /booking/{{bookingId}}` | Positive | 200: The stored booking contains every update |
-| TC_API_020 | Delete Booking | `DELETE /booking/{{bookingId}}` | Negative | 403: 403 Forbidden, booking still exists |
-| TC_API_021 | Delete Booking | `DELETE /booking/{{bookingId}}` | Negative | 403: 403 Forbidden, booking still exists |
-| TC_API_022 | Delete Booking | `DELETE /booking/{{bookingId}}` | Positive | 201: 201 Created (the API's documented success code for DELETE) |
-| TC_API_023 | Delete Booking | `GET /booking/{{bookingId}}` | Negative | 404: 404 Not Found |
-| TC_API_024 | Delete Booking | `DELETE /booking/{{bookingId}}` | Negative | 405: 405 Method Not Allowed (see findings, REST convention would be 404) |
 
 ## Test design
 
